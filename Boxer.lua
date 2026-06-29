@@ -22,11 +22,12 @@ home position and the LAST logged GPS position.
 
 - Logs GPS positions to /LOGS/GPSpositions.txt (viewable with GPS Stats Boxer.lua)
 - In case telemetry stops, the last coordinates remain on screen
-- Reset telemetry data, total distance and home point via "long press enter"
+- Reset home position and trip distance via the custom RESET MENU (short-press ENTER / click wheel)
+- Transmitter system menu (Reset flight / Reset telemetry) remains available via long-press ENTER
 
 Install:
-copy Boxer Telemetry.lua to /SCRIPTS/TELEMETRY
-Setup a "Display" screen and select Boxer Telemetry
+copy Boxer.lua to /SCRIPTS/TELEMETRY
+Setup a "Display" screen and select Boxer
 (no BMP folder needed for this version)
 ################################################################################]]
 

@@ -24,18 +24,32 @@ This project is forked from [moschotto/OpenTX_GPS_Telemetry](https://github.com/
   | ![GPS Fix Screen](media/gps-fix.jpg) | ![No Data Screen](media/no-data.jpg) |
 
 - **No Bitmaps Required:** Completely text-based. No `/BMP` folder or icon files are required, reducing installation size and memory footprint.
-- **New Telemetry Fields:** Displays five crucial on-screen telemetry fields not shown in the original:
-  - `Vc`: Cell voltage (calculated/average per-cell battery voltage)
-  - `Alt`: Real-time altitude (m)
-  - `Spd`: Ground speed (km/h)
-  - `RSSI`: Link RSSI (in dBm, CRSF `1RSS`/`RSS`/`RSSI`)
-  - `LQ`: Link Quality % (CRSF `RQly`/`RQLY`)
 - **Automatic Home Point Capture (Arm-based):** 
   - Captures the home position automatically when you **ARM** the model (detected from the Betaflight `FM` flight-mode telemetry sensor).
   - Resets the trip distance and previous coordinate reference on arming, ensuring each flight starts clean.
   - Falls back to the first solid GPS fix if no flight mode (`FM`) sensor is discovered.
   - Manual override is always available via a short-press of the **ENTER** key (click wheel) to open the custom Reset Menu.
 - **Improved Speed Unit Handling:** Includes configurable speed multiplier (`SPEED_MULT`) to prevent over-reading speed when using CRSF/ELRS (which reports km/h directly) versus FrSky (which reports knots).
+
+---
+
+## Telemetry Fields
+
+The script displays all crucial telemetry data on a single screen:
+
+### GPS & Flight Data
+- **Distance to Home (`DtH`):** Real-time horizontal distance (in km) from your captured home point.
+- **Total Distance (`Tot`):** Accumulated travel distance (in km) over the current session.
+- **Satellite Count (`Sat`):** The number of locked GPS satellites and current fix state (e.g., *GPS 3D fix*, *GPS 2D fix*, or *no GPS fix*).
+- **Home Coordinates (`H`):** The coordinates of your captured home point.
+- **Last Logged Position:** The current (or last known) GPS coordinates of the drone.
+
+### ExpressLRS / Crossfire Telemetry
+- **Cell Voltage (`Vc`):** Calculated average per-cell battery voltage (automatically estimates cell count and divides total pack voltage, or reads per-cell voltage directly if available).
+- **Altitude (`Alt`):** Real-time drone altitude in meters.
+- **Ground Speed (`Spd`):** Real-time ground speed in km/h.
+- **Link RSSI (`RSSI`):** Active uplink RSSI in dBm (uses `1RSS`, `RSS`, or `RSSI` depending on connection).
+- **Link Quality (`LQ`):** Connection link quality percentage (uses `RQly` or `RQLY`).
 
 ---
 

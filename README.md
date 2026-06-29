@@ -44,7 +44,7 @@ This project is forked from [moschotto/OpenTX_GPS_Telemetry](https://github.com/
 
 ### Main Telemetry Screen
 - **Arming:** When you arm your drone, the script automatically captures the home point once a solid GPS fix is active, resetting both the trip distance and home coordinates.
-- **Manual Reset:** Long-press the **ENTER** key on your Boxer to manually reset/re-capture the home point.
+- **Manual Reset:** Short-press (click) the **ENTER** wheel on your Boxer. A custom **RESET MENU** popup will overlay on the screen. Scroll to select **Reset Home** and click **ENTER** to confirm (or select **Cancel** / press the **EXIT** button to dismiss).
 
 ### GPS Log Viewer
 - Go to the **SYS** menu on your Boxer, navigate to **Tools**, and select **GPS Stats Boxer**.

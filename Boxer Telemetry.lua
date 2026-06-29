@@ -39,8 +39,8 @@ log_filename = "/LOGS/GPSpositions.txt"
 --   "arm"    = only on arm (FM telemetry). Home stays unset until first arm.
 --   "switch" = on a transmitter arm switch/channel going active (set HOME_SWITCH).
 --   "fix"    = automatically on the first solid GPS fix after power-up.
---   "manual" = only via long-press ENTER.
--- Long-press ENTER always works as a manual override in every mode.
+--   "manual" = only via short-press ENTER menu.
+-- Short-press ENTER opens the manual reset menu in every mode.
 local HOME_MODE   = "hybrid"
 local HOME_MIN_SATS = 6        -- min satellites before home may be set automatically
 local HOME_SWITCH = "sf"       -- only used in "switch" mode: source name e.g. "sa".."sh" or "ch5"
@@ -82,6 +82,9 @@ local now = 0
 local ctr = 0
 local coordinates_prev = 0
 local coordinates_current = 0
+
+local menuOpen = false
+local menuSelection = 1
 
 local old_time_write2 = 0
 local wait = 100
@@ -362,15 +365,31 @@ local function run(event)
 	lcd.clear()
 	background()
 
-	--manual override: clear home/distances and re-capture at next good fix
-	if event == EVT_ENTER_LONG then
-		gpsDtH = 0
-		gpsTotalDist = 0
-		gpsLAT_H = 0
-		gpsLON_H = 0
-		gpsPrevLAT = 0
-		gpsPrevLON = 0
-		homePending = true
+	-- manual override menu handling
+	if menuOpen then
+		if event == EVT_EXIT_BREAK then
+			menuOpen = false
+		elseif (event == EVT_ROT_RIGHT) or (event == EVT_DOWN_BREAK) or (event == EVT_PLUS_BREAK) then
+			menuSelection = 2
+		elseif (event == EVT_ROT_LEFT) or (event == EVT_UP_BREAK) or (event == EVT_MINUS_BREAK) then
+			menuSelection = 1
+		elseif event == EVT_ENTER_BREAK then
+			if menuSelection == 1 then
+				gpsDtH = 0
+				gpsTotalDist = 0
+				gpsLAT_H = 0
+				gpsLON_H = 0
+				gpsPrevLAT = 0
+				gpsPrevLON = 0
+				homePending = true
+			end
+			menuOpen = false
+		end
+	else
+		if event == EVT_ENTER_BREAK then
+			menuOpen = true
+			menuSelection = 1
+		end
 	end
 
 	-- frame
@@ -410,6 +429,33 @@ local function run(event)
 		lcd.drawText(2,55, coordinates_current, SMLSIZE)
 	else
 		lcd.drawText(2,55, coordinates_current, SMLSIZE + INVERS + BLINK)
+	end
+
+	-- Draw custom popup menu if open
+	if menuOpen then
+		local boxX = 14
+		local boxY = 12
+		local boxW = 100
+		local boxH = 40
+
+		-- Draw box background and border
+		lcd.drawFilledRectangle(boxX, boxY, boxW, boxH, ERASE)
+		lcd.drawRectangle(boxX, boxY, boxW, boxH, FORCE)
+
+		-- Draw box header
+		lcd.drawFilledRectangle(boxX + 2, boxY + 2, boxW - 4, 10, FORCE)
+		lcd.drawText(boxX + 18, boxY + 3, "RESET MENU", SMLSIZE + INVERS)
+
+		-- Draw menu options
+		if menuSelection == 1 then
+			lcd.drawFilledRectangle(boxX + 6, boxY + 15, boxW - 12, 9, FORCE)
+			lcd.drawText(boxX + 10, boxY + 16, "Reset Home", SMLSIZE + INVERS)
+			lcd.drawText(boxX + 10, boxY + 26, "Cancel", SMLSIZE)
+		else
+			lcd.drawText(boxX + 10, boxY + 16, "Reset Home", SMLSIZE)
+			lcd.drawFilledRectangle(boxX + 6, boxY + 25, boxW - 12, 9, FORCE)
+			lcd.drawText(boxX + 10, boxY + 26, "Cancel", SMLSIZE + INVERS)
+		end
 	end
 
 end
